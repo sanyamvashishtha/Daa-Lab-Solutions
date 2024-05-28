@@ -1,6 +1,6 @@
 #include <fcntl.h> // for open
 #include <unistd.h> // for close
-#include <stdio.h> // for printf and scanf and fgets
+#include <stdio.h> // for printf and scanf and fgets 
 
 int main() {
     char buffer[256];
