@@ -1,50 +1,67 @@
 #include <stdio.h>
 #include <conio.h>
 #define max 25
+
 void main()
 {
-    int frag[max], b[max], f[max], i, j, nb, nf, temp, highest = 0;
-    static int bf[max], ff[max];
-    printf("\tMemory Management Scheme - Worst Fit");
-    printf("\nEnter the number of blocks:");
+    int frag[max], b[max], f[max], bf[max], ff[max];
+    int i, j, nb, nf, temp;
+
+    printf("\tMemory Management Scheme - First Fit\n");
+    printf("Enter the number of blocks: ");
     scanf("%d", &nb);
-    printf("Enter the number of files:");
+    printf("Enter the number of files: ");
     scanf("%d", &nf);
-    printf("Enter the size of the blocks:-\n");
+
+    printf("Enter the size of the blocks:\n");
     for (i = 1; i <= nb; i++)
     {
-        printf("Block %d:", i);
+        printf("Block %d: ", i);
         scanf("%d", &b[i]);
     }
-    printf("Enter the size of the files :-\n");
+
+    printf("Enter the size of the files:\n");
     for (i = 1; i <= nf; i++)
     {
-        printf("File %d:", i);
+        printf("File %d: ", i);
         scanf("%d", &f[i]);
     }
+
+    // Initialize bf[] to mark all blocks as free initially
+    for (i = 1; i <= nb; i++)
+        bf[i] = 0;
+
+    // Allocation logic
     for (i = 1; i <= nf; i++)
     {
         for (j = 1; j <= nb; j++)
         {
-            if (bf[j] != 1)
+            if (bf[j] == 0 && b[j] >= f[i]) // Check if block is free and size is sufficient
             {
-                temp = b[j] - f[i];
-                if (temp >= 0)
-                    if (highest < temp)
-                    {
-                        ff[i] = j;
-                        highest = temp;
-                    }
+                ff[i] = j;             // Allocate file i to block j
+                frag[i] = b[j] - f[i]; // Calculate fragmentation
+                bf[j] = 1;             // Mark block as allocated
+                break;
             }
         }
-        frag[i] = highest;
-        bf[ff[i]] = 1;
-        highest = 0;
+        if (j > nb) // If no suitable block is found
+        {
+            ff[i] = 0;   // File i is not allocated
+            frag[i] = 0; // No fragmentation
+        }
     }
-    printf("File_no:\tFile_size :\tBlock_no:\tBlock_size:\tFragement");
+
+    // Display results
+    printf("File_no:\tFile_size:\tBlock_no:\tBlock_size:\tFragment\n");
     for (i = 1; i <= nf; i++)
+    {
         if (ff[i] != 0)
-            printf("\n%d\t\t%d\t\t%d\t\t%d\t\t%d", i, f[i], ff[i], b[ff[i]], frag[i]);
+        {
+            printf("%d\t\t%d\t\t%d\t\t%d\t\t%d\n", i, f[i], ff[i], b[ff[i]], frag[i]);
+        }
         else
-            printf("\n%d\t\t%d\t\t%d\t\t144\t\t0", i, f[i], ff[i]);
+        {
+            printf("%d\t\t%d\t\tNot Allocated\n", i, f[i]);
+        }
+    }
 }
