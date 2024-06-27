@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <conio.h>
+
 int i, j, nof, nor, flag = 0, ref[50], frm[50], pf = 0, victim = -1;
-int recent[10], lrucal[50], count = 0;
+int recent[50], lrucal[50], count = 0;
+
 int lruvictim();
+
 void main()
 {
     printf("LRU PAGE REPLACEMENT ALGORITHM");
@@ -13,19 +16,22 @@ void main()
     printf("Enter reference string: ");
     for (i = 0; i < nor; i++)
         scanf("%d", &ref[i]);
+
     printf("LRU PAGE REPLACEMENT ALGORITHM ");
     printf("\nThe given reference string: ");
-
     for (i = 0; i < nor; i++)
         printf("%4d", ref[i]);
-    for (i = 1; i <= nof; i++)
+    printf("\n");
+
+    for (i = 0; i < nof; i++)
     {
         frm[i] = -1;
-        lrucal[i] = 0;
     }
-    for (i = 0; i < 10; i++)
-        recent[i] = 0;
-    printf("\n");
+    for (i = 0; i < 50; i++)
+    {
+        recent[i] = -1;
+    }
+
     for (i = 0; i < nor; i++)
     {
         flag = 0;
@@ -55,9 +61,10 @@ void main()
     }
     printf("No.of page faults...%d", pf);
 }
+
 int lruvictim()
 {
-    int i, j, temp1, temp2;
+    int i, j, temp1, temp2, min_index = 0;
     for (i = 0; i < nof; i++)
     {
         temp1 = frm[i];
@@ -67,10 +74,10 @@ int lruvictim()
     for (j = 1; j < nof; j++)
     {
         if (temp2 > lrucal[j])
+        {
             temp2 = lrucal[j];
+            min_index = j;
+        }
     }
-    for (i = 0; i < nof; i++)
-        if (ref[temp2] == frm[i])
-            return i;
-    return 0;
+    return min_index;
 }
