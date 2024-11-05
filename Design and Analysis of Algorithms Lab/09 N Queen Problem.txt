@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_N 6
+
+// Function to check if placing a queen at position (row, col) is safe
+bool is_safe(int board[MAX_N][MAX_N], int row, int col, int N) {
+    // Check column
+    for (int i = 0; i < row; i++) {
+        if (board[i][col] == 1) {
+            return false;
+        }
+    }
+
+    // Check diagonal (top-left to bottom-right)
+    for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
+        if (board[i][j] == 1) {
+            return false;
+        }
+    }
+
+    // Check diagonal (top-right to bottom-left)
+    for (int i = row - 1, j = col + 1; i >= 0 && j < N; i--, j++) {
+        if (board[i][j] == 1) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// Backtracking function to solve N-Queens problem
+void solve_n_queens(int board[MAX_N][MAX_N], int row, int N, int* solution_count) {
+    // If all queens are placed, increment solution count and print the board
+    if (row == N) {
+        (*solution_count)++;
+        printf("Solution #%d:\n", *solution_count);
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (board[i][j] == 1) {
+                    printf("Q	");
+                } else {
+                    printf("*	");
+                }
+            }
+            printf("\n");
+        }
+        printf("");
+        return;
+    }
+
+    // Try placing a queen in each column of the current row
+    for (int col = 0; col < N; col++) {
+        if (is_safe(board, row, col, N)) {
+            // Place queen at (row, col)
+            board[row][col] = 1;
+
+            // Recur to place the rest of the queens
+            solve_n_queens(board, row + 1, N, solution_count);
+
+            // Backtrack (remove the queen from (row, col))
+            board[row][col] = 0;
+        }
+    }
+}
+
+int main() {
+    int N;
+    scanf("%d", &N);
+
+    // Check for valid N
+    if (N < 1 || N > MAX_N) {
+        printf("Invalid input.\n");
+        return 1;
+    }
+
+    // Initialize the board with 0s (no queens placed)
+    int board[MAX_N][MAX_N] = {0};
+
+    int solution_count = 0;
+    solve_n_queens(board, 0, N, &solution_count);
+
+    if (solution_count == 0) {
+        printf("Total solutions:%d\n", solution_count);
+    } else {
+        printf("Total solutions:%d\n", solution_count);
+    }
+
+    return 0;
+}
